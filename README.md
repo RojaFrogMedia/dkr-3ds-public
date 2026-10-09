@@ -321,8 +321,8 @@ and is of no use without one.
 - dfchil's port of that decompilation to PC and the Dreamcast
   (github.com/dfchil/Diddy-Kong-Racing), which the 3DS target was added to.
 - The makers of the character patches the added characters come from:
-  **syeo**, **ThatGuyMcd** and **That Smol Bobcat**. The table below says
-  who made which.
+  **syeo** and **That Smol Bobcat**. Some patches have also come from the N64Vault. 
+  The table below sayswho made which.
 - devkitPro: devkitARM, libctru, citro3d and the 3DS tools.
 - makerom (3DSGuy, jakcron; Project_CTR) and bannertool (Steveice10,
   carstene1ns), which package the program in `builder/prebuilt/`.
@@ -340,8 +340,8 @@ the Nintendo 64 game, not of this project.
 | 3 | Bowser | syeo | `bowser - syeo.xdelta` |
 | 4 | Dixie Kong | syeo | `dixie kong.xdelta` |
 | 5 | Link | syeo | `DKR-OOT-64-1.1.xdelta` ("DKR OOT 64") |
-| 6 | Yoshi | ThatGuyMcd | `DKR-Yoshi-Racing-Story64v04.xdelta` ("Yoshi Racing Story 64") |
-| 7 | Red Yoshi | ThatGuyMcd | `DKR-Yoshi-Racing-Story64v04.xdelta` ("Yoshi Racing Story 64") |
+| 6 | Yoshi | N64Vault | `DKR-Yoshi-Racing-Story64v04.xdelta` ("Yoshi Racing Story 64") |
+| 7 | Red Yoshi | N64Vault | `DKR-Yoshi-Racing-Story64v04.xdelta` ("Yoshi Racing Story 64") |
 | 8 | Donkey Kong | syeo | `donkey kong - syeo.xdelta` |
 | 9 | Grunty | syeo | `grunty - syeo (recomp).xdelta` |
 | 10 | Jinjo | syeo | `jinjo (blue) - syeo.xdelta` |
@@ -356,7 +356,7 @@ the Nintendo 64 game, not of this project.
 | 19 | Tiny Kong | syeo | `tiny kong - syeo.xdelta` |
 | 20 | Waluigi | syeo | `waluigi - syeo.xdelta` |
 | 21 | Wario | syeo | `wario - syeo (recomp).xdelta` |
-| 22 | Wizpig | ThatGuyMcd | `wizpig.xdelta` |
+| 22 | Wizpig | syeo | `wizpig.xdelta` |
 | 23 | Yooka | syeo | `yooka.xdelta` |
 | 24 | Bubsy | That Smol Bobcat | |
 | 25 | Moggy | syeo | |
