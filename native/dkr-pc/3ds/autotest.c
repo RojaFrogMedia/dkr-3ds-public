@@ -19,6 +19,9 @@
 //                    <frame> COLUMNS n            character select: pretend the screen holds n columns
 //                    <frame> SKIPLOGOS            from here a key ends the opening logos, as it does for
 //                                                 a player (a script's keys leave them alone otherwise)
+//                    <frame> BOSS name            in the Adventure: go straight to a boss's race (tricky
+//                                                 bluey bubbler smokey wizpig; tricky2 ... wizpig2 for
+//                                                 the rematches; taj for his race around the island)
 //                    <frame> EXIT                 leave
 //                    <frame> JINGLE               play the locked-door jingle over the music
 //                    <frame> JINGLE_END           bring the music back, as the door does
@@ -34,9 +37,9 @@
 #include "touchmenu.h"
 
 #define MAX_CMDS 128
-enum { CMD_KEYS, CMD_SHOT, CMD_EXIT, CMD_JINGLE, CMD_JINGLE_END, CMD_AUDIO, CMD_TOUCH, CMD_BSHOT, CMD_COLUMNS, CMD_HOME, CMD_NOMUSIC, CMD_SOUND, CMD_BANKSOUND, CMD_VOICECHECK, CMD_HIDETEXT, CMD_SKIPLOGOS };
+enum { CMD_KEYS, CMD_SHOT, CMD_EXIT, CMD_JINGLE, CMD_JINGLE_END, CMD_AUDIO, CMD_TOUCH, CMD_BSHOT, CMD_COLUMNS, CMD_HOME, CMD_NOMUSIC, CMD_SOUND, CMD_BANKSOUND, CMD_VOICECHECK, CMD_HIDETEXT, CMD_SKIPLOGOS, CMD_BOSS };
 #define TOUCH_FRAMES 3
-typedef struct { int frame, frames, kind; u32 keys; } Cmd;
+typedef struct { int frame, frames, kind; u32 keys; char name[12]; } Cmd;
 
 static Cmd sCmds[MAX_CMDS];
 static int sCmdCount;
@@ -203,7 +206,7 @@ void autotest_init(const char *dir) {
         return;
     }
     while (fgets(line, sizeof(line), f) != NULL && sCmdCount < MAX_CMDS) {
-        Cmd c = { 0, 0, CMD_KEYS, 0 };
+        Cmd c = { 0, 0, CMD_KEYS, 0, "" };
         char a[32] = "", b[64] = "";
         char *tok;
 
@@ -236,6 +239,9 @@ void autotest_init(const char *dir) {
             sscanf(b, "%d,%d", &x, &y);
             c.kind = CMD_TOUCH;
             c.keys = (u32) x | ((u32) y << 16);
+        } else if (strcasecmp(a, "BOSS") == 0) {
+            c.kind = CMD_BOSS;
+            snprintf(c.name, sizeof(c.name), "%s", b);
         } else if (strcasecmp(a, "EXIT") == 0) {
             c.kind = CMD_EXIT;
         } else if (strcasecmp(a, "JINGLE") == 0) {
@@ -416,6 +422,12 @@ void autotest_frame(const char *dir, u64 workTicks) {
             gMpHideText = 1;
         } else if (c->kind == CMD_SKIPLOGOS && sFrame == c->frame) {
             gLogosSkippable = 1;
+        } else if (c->kind == CMD_BOSS && sFrame == c->frame) {
+            extern s32 pc_debug_boss(const char *name);     // src/thread3_main.c
+
+            if (!pc_debug_boss(c->name)) {
+                printf("AUTOTEST: no boss called %s\n", c->name);
+            }
         } else if (c->kind == CMD_VOICECHECK && sFrame == c->frame) {
             extern void modchar_voices_check(void);     // characters.c
 

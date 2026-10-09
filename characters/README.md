@@ -53,12 +53,19 @@ To make your own from other patches, see "Added characters" in
 ## Credits
 
 The characters are the work of the people who made the patches, not of this
-project. The patches' file names credit **syeo** for Bomberman, Bottles,
-Bowser, Donkey Kong, Grunty, Jinjo, Kazooie, Laylee, Luigi, Sabreman, Tiny
-Kong, Waluigi and Wario. Link is from the patch "DKR OOT 64" and the two
-Yoshis from "Yoshi Racing Story 64". The makers of the others are not named
-in the files this was made from; if one of them is yours and you want your
-name here, or the character taken out, open an issue.
+project:
+
+- **syeo:** Bomberman, Bottles, Bowser, Dixie Kong, Donkey Kong, Grunty,
+  Jinjo, K. Rool, Kazooie, Laylee, Link (the patch "DKR OOT 64"), Luigi,
+  Mario, Moggy, Mumbo Jumbo, Sabreman, Shovel Knight, Taj, Tiny Kong,
+  Waluigi, Wario and Yooka.
+- **ThatGuyMcd:** Yoshi and Red Yoshi (the patch "Yoshi Racing Story 64"),
+  and Wizpig.
+- **That Smol Bobcat:** Bubsy.
+
+The main `README.md` has the same as a table, with each patch's file name.
+If one of them is yours and the credit is wrong, or you want the character
+taken out, open an issue.
 
 The characters themselves belong to their owners (Nintendo, Rare, Konami,
 Yacht Club Games, Playtonic and others). This is a fan project and has no

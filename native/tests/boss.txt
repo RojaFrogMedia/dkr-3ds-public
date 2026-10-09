@@ -1,0 +1,33 @@
+# A boss's race without playing up to it: into GAME A of the Adventure, and
+# from the island straight to the boss with the BOSS command (tricky bluey
+# bubbler smokey wizpig, and tricky2 ... wizpig2 for the rematches). To see the
+# touch screen's two rows there: you and the boss. tools/run-bosses.sh runs
+# this once for every boss, putting each one's name in place of BOSSNAME.
+1000 8 START
+1100 8 START
+1250 8 A
+1400 8 A
+1550 8 A
+1800 8 A
+2000 8 A
+2250 8 A
+2500 8 A
+2650 8 A
+2800 8 A
+3100 BOSS BOSSNAME
+3300 SHOT
+3380 SHOT
+3450 SHOT
+3460 BSHOT
+3700 8 A
+3800 8 A
+3900 1500 A
+4000 SHOT
+4010 BSHOT
+4500 SHOT
+4510 BSHOT
+5000 SHOT
+5010 BSHOT
+5400 SHOT
+5410 BSHOT
+5450 EXIT

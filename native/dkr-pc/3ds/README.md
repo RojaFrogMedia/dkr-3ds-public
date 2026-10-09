@@ -247,6 +247,25 @@ in `src/menu.c` are in another order and are wrong about which picture they
 hold; the first version here took the names' order from them and called
 Diddy "Timber".
 
+Bosses. A boss is a racer like any other to the game, and the character
+number it carries is whatever the save holds for the second seat of the grid
+(`spawn_racers` in `src/objects.c`): the first version here read it, and
+every boss wore some computer racer's face and name, a different one from
+save to save. `bottom_boss` knows a boss by its vehicle and gives it its own
+name and a colour of its own on the map. The game has no portrait of a boss,
+so their faces are pictures of the touch screen's own
+(`bottom/boss-<name>.bin`, see Pictures); without the file a boss has its
+colour and initial. The player's racer keeps an added character in a boss
+race too (`modCharacter`, which used to be dropped there, so the row showed
+the donor).
+
+Taj, in his races around the island, is the same case: his carpet is a
+second racer that carries the player's own character number
+(`mode_init_taj_race`), so the standings showed the player twice. He is
+named TAJ now, and his picture is the portrait of the added character called
+Taj when the roster has one (`bottom_added_taj`), else `bottom/boss-taj.bin`
+if someone makes one, else the tile.
+
 Cost. It is drawn by the game's thread at the controller poll, in software,
 so it draws as little as it can: everything goes into a copy of the screen
 and only the part that changed is copied to the frame buffer and flushed;
@@ -265,12 +284,24 @@ display's banana) and draws `sky.bin` itself, and puts the three in
 the rest. Without them the pages show the title and the word BANANAS as text
 on plain dark blue. (`native/tests/sky.txt`, with the test command
 `HIDETEXT`, takes a picture of the multiplayer menus' sky without their
-words.)
+words.) The five bosses' faces (`boss-tricky.bin`, `boss-bluey.bin`,
+`boss-bubbler.bin`, `boss-smokey.bin`, `boss-wizpig.bin`) are not made by
+the builder, the ROM having no such pictures: a boss shows its colour and
+initial unless someone puts a picture of their own there, in the format
+`Picture.touch_screen_file` of `builder/picture.py` writes (48 x 48 is
+plenty; it is shown at half that).
 
 Tests: `bottom` (title screen and a Tracks mode race), `bottom-adventure`
 (the island), `bottom-mp-host` with `bottom-mp-join` (a session, with
 `tools/run-localplay.sh`); each takes pictures of the touch screen
 (`out/native-run/bottom.png`, `out/localplay-run/*-bottom-*.png`).
+`tools/run-bosses.sh` runs every boss's race, one emulator run each
+(`native/tests/boss.txt`; `boss-added.txt` with an added character), and
+leaves both screens' pictures in `out/bosses/`. They get there with the
+test command `BOSS name` (`pc_debug_boss` in `src/thread3_main.c`), which
+goes from the Adventure's island straight to a boss, so no save that has
+reached the boss is needed; `BOSS taj` (`tools/run-bosses.sh taj`) starts
+Taj's car race on the island.
 
 ## Widescreen
 
@@ -681,6 +712,7 @@ Empty files in `sdmc:/3ds/DKR/`:
 | `characters.txt`, `voices/` | The added characters' list and their voice files, one per character, with the `assets.bin` that `tools/import-characters.py` wrote beside them; all of one pack, or the characters are silent. Without `characters.txt` the game is the plain one |
 | `bananas.txt` | The banana bank: `bananas 1234` |
 | `bottom/logo.bin`, `bottom/banana.bin`, `bottom/sky.bin` | The touch screen's pictures (the builder makes them); text and a plain background without them |
+| `bottom/boss-tricky.bin`, `-bluey`, `-bubbler`, `-smokey`, `-wizpig` | The bosses' faces in the touch screen's standings, if you make them (the builder does not); a coloured tile with the initial without them |
 | `lan.txt` | Local wireless stood in for by UDP on the access point; format at the top of `link.c` |
 | `online.txt` | Online play: the port, an address to put in the code instead of asking the router, `noupnp`, a `code` to join without the keyboard; format in `link.c` |
 | `NETLOG.TXT` | Local Play logs every poll's state check, to find where two consoles part ways |

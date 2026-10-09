@@ -10,11 +10,31 @@ added characters beside the game's ten.
 folder takes the game's data out of it and gives you a `.3dsx` and a `.cia`
 ready for the SD card.
 
-**To get it:** on GitHub, press the green **Code** button and choose
-**Download ZIP**, then unpack the ZIP anywhere. (Or clone the repository.)
+## Get it here: [github.com/RojaFrogMedia/dkr-3ds-public](https://github.com/RojaFrogMedia/dkr-3ds-public)
+
+On that page, press the green **Code** button and choose **Download ZIP**,
+then unpack the ZIP anywhere. Or clone the repository:
+
+```
+git clone https://github.com/RojaFrogMedia/dkr-3ds-public.git
+```
+
+Already have an older copy? Download it again (or `git pull`) and run the
+builder once more: [What was fixed](#what-was-fixed) lists what the newer
+one brings.
 
 This is an unofficial fan project, not affiliated with or endorsed by
 Nintendo or Rare.
+
+**On this page:**
+[What you need](#what-you-need) ·
+[Making the game](#making-the-game-three-steps) ·
+[Controls](#controls) ·
+[What is different](#what-is-different-from-the-n64-game) ·
+[What was fixed](#what-was-fixed) ·
+[How far it has been tested](#how-far-it-has-been-tested) ·
+[When something goes wrong](#when-something-goes-wrong) ·
+[Credits](#credits)
 
 ## What you need
 
@@ -26,63 +46,6 @@ Nintendo or Rare.
   SHA-1 `0cb115d8716dbbc2922fda38e533b9fe63bb9670` (as a `.z64` file).
   Other releases (Europe, Japan, US 1.1) and modified ROMs are refused.
 - A PC to run the builder once: Windows, Linux or macOS.
-
-- Custom Character credits:
-- 
- 1   Bomberman       syeo     bomberman - syeo (recomp).xdelta
-  
- 2   Bottles         syeo     bottles - syeo.xdelta
- 
- 3   Bowser          syeo     bowser - syeo.xdelta
- 
- 4   Dixie Kong      syeo         dixie kong.xdelta
- 
- 5   Link            syeo         DKR-OOT-64-1.1.xdelta ("DKR OOT 64")
- 
- 6   Yoshi           ThatGuyMcd         DKR-Yoshi-Racing-Story64v04.xdelta ("Yoshi Racing Story 64")
- 
- 7   Red Yoshi       ThatGuyMcd         DKR-Yoshi-Racing-Story64v04.xdelta ("Yoshi Racing Story 64")
- 
- 8   Donkey Kong     syeo     donkey kong - syeo.xdelta
- 
- 9   Grunty          syeo     grunty - syeo (recomp).xdelta
- 
-10   Jinjo           syeo     jinjo (blue) - syeo.xdelta
-
-11   Kazooie         syeo     kazooie - syeo.xdelta
-
-12   K. Rool         syeo         kkrool.xdelta
-
-13   Laylee          syeo     laylee - syeo.xdelta
-
-14   Luigi           syeo     luigi - syeo.xdelta
-
-15   Mario           syeo         mario.xdelta
-
-16   Sabreman        syeo     sabreman - syeo.xdelta
-
-17   Shovel Knight   syeo         shovelknight.xdelta
-
-18   Taj             syeo         taj.xdelta
-
-19   Tiny Kong       syeo     tiny kong - syeo.xdelta
-
-20   Waluigi         syeo     waluigi - syeo.xdelta
-
-21   Wario           syeo     wario - syeo (recomp).xdelta
-
-22   Wizpig          ThatGuyMcd         wizpig.xdelta
-
-23   Yooka           syeo         yooka.xdelta
-
-24   Bubsy           That Smol Bobcat       
-
-25   Moggy           syeo 
-
-26   Mumbo Jumbo     syeo    
-
-
-  
 
 ## Making the game: three steps
 
@@ -184,7 +147,9 @@ mode, which save file to use, live frame statistics, and the controls.
 - **The touch screen** shows, in a race, the standings with portraits, the
   track's map, speed, lap and bananas (the banana count and the map are
   taken off the top screen); in the Adventure's hub, what the save has
-  collected; on menus, the logo.
+  collected; on menus, the logo. Against a boss, the standings name the
+  boss (TRICKY, BLUEY, BUBBLER, SMOKEY, WIZPIG, and TAJ in his races
+  around the island).
 - **Multiplayer between consoles** instead of split screen: a MULTIPLAYER
   entry on the title screen, LOCAL WIRELESS or ONLINE, up to four players,
   each with the whole screen. Every track and character is open there, and
@@ -214,6 +179,62 @@ mode, which save file to use, live frame statistics, and the controls.
   the port has to be forwarded by hand. `tools/upnp-port.py` shows or
   removes a forwarding left behind after a crash.
 
+## What was fixed
+
+Newest first. Each of these was a fault seen while playing, most of them on
+a real New 3DS; the fixes were then checked in the emulator (see the next
+section for what that does and does not prove).
+
+### 9 October 2026: boss races
+
+- **The touch screen showed the wrong racer for a boss.** Against Tricky,
+  Bluey, Bubbler, Smokey or Wizpig, the standings gave the boss the face and
+  name of some computer racer, a different one from save to save. A boss now
+  has its own name and its own colour on the map. The game has no portrait
+  of a boss, so its picture is a coloured tile with its initial.
+- **Taj's races showed you twice.** In his races around the island the
+  standings listed the player a second time in Taj's place. He is TAJ now,
+  with the portrait of the added character Taj when the game was built with
+  the added characters.
+- **An added character turned into its donor in a boss race.** If you raced
+  a boss as, say, Bowser, the standings showed the character Bowser drives
+  like instead. Boss races now keep the added character: name, portrait and
+  voice.
+- **No lap count against the bosses raced over laps.** Bubbler, Smokey and
+  Wizpig are three-lap races; the touch screen now counts the laps there as
+  in any race.
+
+### The first release (8 and 9 October 2026)
+
+Already in the first public copy, listed so that the history is in one
+place:
+
+- **Challenge stages:** the signs over each racer's nest in the egg
+  challenge (Fire Mountain) were half a picture or missing; they are whole.
+  Added characters wear their own face on those signs and on the challenge
+  display, not their donor's.
+- **The opening logos** can be skipped with any button, straight to the
+  title screen with its options up.
+- **Title screen camera:** after a multiplayer race, backing out of the
+  multiplayer menus to the title screen could leave its camera jumping
+  about. It no longer does.
+- **Menus without their words:** the pause menu in a race, the multiplayer
+  screens and the heading of the character select had lost their text on
+  the console. They have it back.
+- **The track's picture** on the menus after a race hung over its wooden
+  frame on the wide screen; it stays inside it.
+- **Speed:** light scenes ran at 58 frames a second on the console and the
+  heaviest races at 40 to 47. Drawing was reordered so that the game and
+  the graphics chip no longer wait for each other; the console's own log
+  then showed 60 for 221 of 239 seconds of play.
+- **Added characters' voices:** some played another character's lines.
+  Every character has its own voice file now, and all 640 lines of the 36
+  characters were played back and compared with their recordings.
+- **A freeze after one to five minutes of play** (the music's event queue
+  ran full) is gone.
+- **HOME:** the first press pauses, a second closes the game, any other
+  button resumes; it used to be able to hang there.
+
 ## How far it has been tested
 
 Said plainly, so that you know what to expect:
@@ -225,7 +246,8 @@ Said plainly, so that you know what to expect:
   second about two thirds of the time and fall to 30 in the heavier ones; a
   real Old 3DS has not been tried and may be slower. The added characters
   (the select, races, results, and every voice line played back and compared
-  with its recording). Every multiplayer
+  with its recording). The boss races' touch screen (Tricky, Smokey,
+  Bubbler with an added character, and Taj). Every multiplayer
   feature, with two to four emulated consoles: local wireless between real
   consoles and online play between two real networks have **not** been
   tried.
@@ -280,7 +302,7 @@ log", "When it freezes or crashes", "Sound that goes missing").
 | `output/` | Made by the builder; not part of the repository, and not to be shared: it holds the game's data |
 | `native/dkr-pc/` | **The game's source code**: the decompilation (`src/`, `libultra/`) and the Nintendo 3DS layer (`3ds/`). `3ds/README.md` explains how it works, file by file |
 | `native/tests/` | Scripted test runs for the emulator |
-| `tools/` | For developers: packaging from source, the test runners, the builder's cross-check, save and character tools |
+| `tools/` | For developers: packaging from source, the test runners (`run-native.sh`, `run-localplay.sh`, `run-bosses.sh`), the builder's cross-check, save and character tools |
 | `docs/BUILDING.md` | Compiling the program yourself, and how the builder works |
 | `docs/HOW-NATIVE-PC-PORTS-RUN-AT-60FPS-ON-3DS.txt` | How the 60 fps was reached |
 
@@ -298,12 +320,51 @@ and is of no use without one.
   (github.com/DavidSM64/Diddy-Kong-Racing), whose source code this is.
 - dfchil's port of that decompilation to PC and the Dreamcast
   (github.com/dfchil/Diddy-Kong-Racing), which the 3DS target was added to.
-- The makers of the character patches the added characters come from;
-  `characters/README.md` names those the files name.
+- The makers of the character patches the added characters come from:
+  **syeo**, **ThatGuyMcd** and **That Smol Bobcat**. The table below says
+  who made which.
 - devkitPro: devkitARM, libctru, citro3d and the 3DS tools.
 - makerom (3DSGuy, jakcron; Project_CTR) and bannertool (Steveice10,
   carstene1ns), which package the program in `builder/prebuilt/`.
 - Azahar, the emulator the tests run in.
+
+### Custom character credits
+
+The added characters are the work of the people who made these patches for
+the Nintendo 64 game, not of this project.
+
+| # | Character | Made by | Patch |
+|--:|---|---|---|
+| 1 | Bomberman | syeo | `bomberman - syeo (recomp).xdelta` |
+| 2 | Bottles | syeo | `bottles - syeo.xdelta` |
+| 3 | Bowser | syeo | `bowser - syeo.xdelta` |
+| 4 | Dixie Kong | syeo | `dixie kong.xdelta` |
+| 5 | Link | syeo | `DKR-OOT-64-1.1.xdelta` ("DKR OOT 64") |
+| 6 | Yoshi | ThatGuyMcd | `DKR-Yoshi-Racing-Story64v04.xdelta` ("Yoshi Racing Story 64") |
+| 7 | Red Yoshi | ThatGuyMcd | `DKR-Yoshi-Racing-Story64v04.xdelta` ("Yoshi Racing Story 64") |
+| 8 | Donkey Kong | syeo | `donkey kong - syeo.xdelta` |
+| 9 | Grunty | syeo | `grunty - syeo (recomp).xdelta` |
+| 10 | Jinjo | syeo | `jinjo (blue) - syeo.xdelta` |
+| 11 | Kazooie | syeo | `kazooie - syeo.xdelta` |
+| 12 | K. Rool | syeo | `kkrool.xdelta` |
+| 13 | Laylee | syeo | `laylee - syeo.xdelta` |
+| 14 | Luigi | syeo | `luigi - syeo.xdelta` |
+| 15 | Mario | syeo | `mario.xdelta` |
+| 16 | Sabreman | syeo | `sabreman - syeo.xdelta` |
+| 17 | Shovel Knight | syeo | `shovelknight.xdelta` |
+| 18 | Taj | syeo | `taj.xdelta` |
+| 19 | Tiny Kong | syeo | `tiny kong - syeo.xdelta` |
+| 20 | Waluigi | syeo | `waluigi - syeo.xdelta` |
+| 21 | Wario | syeo | `wario - syeo (recomp).xdelta` |
+| 22 | Wizpig | ThatGuyMcd | `wizpig.xdelta` |
+| 23 | Yooka | syeo | `yooka.xdelta` |
+| 24 | Bubsy | That Smol Bobcat | |
+| 25 | Moggy | syeo | |
+| 26 | Mumbo Jumbo | syeo | |
+
+If one of these is yours and the credit is wrong, or you want the character
+taken out, open an issue on
+[the project's page](https://github.com/RojaFrogMedia/dkr-3ds-public/issues).
 
 ## Legal
 

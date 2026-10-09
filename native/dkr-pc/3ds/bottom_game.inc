@@ -26,6 +26,38 @@ static const char *const sBottomNames[NUMBER_OF_CHARACTERS] = {
     [CHARACTER_DIDDY] = "DIDDY",
 };
 
+static const char *const sBottomBossNames[BOTTOM_BOSS_COUNT] = {
+    [BOTTOM_BOSS_TRICKY] = "TRICKY",   [BOTTOM_BOSS_BLUEY] = "BLUEY",   [BOTTOM_BOSS_BUBBLER] = "BUBBLER",
+    [BOTTOM_BOSS_SMOKEY] = "SMOKEY",   [BOTTOM_BOSS_WIZPIG] = "WIZPIG", [BOTTOM_BOSS_TAJ] = "TAJ",
+};
+
+/**
+ * Which boss a racer is, or BOTTOM_BOSS_NONE. A boss is a racer like any
+ * other to the game, and the character number it carries is whatever the save
+ * has for the second seat of the grid (spawn_racers in src/objects.c): a face
+ * and a name that have nothing to do with it. Taj on his carpet carries the
+ * player's own (mode_init_taj_race).
+ */
+static s32 bottom_boss(Object_Racer *racer) {
+    switch (racer->vehicleIDPrev) {
+        case VEHICLE_CARPET:
+            return BOTTOM_BOSS_TAJ;
+        case VEHICLE_TRICKY:
+            return BOTTOM_BOSS_TRICKY;
+        case VEHICLE_BLUEY:
+            return BOTTOM_BOSS_BLUEY;
+        case VEHICLE_BUBBLER:
+            return BOTTOM_BOSS_BUBBLER;
+        case VEHICLE_SMOKEY:
+            return BOTTOM_BOSS_SMOKEY;
+        case VEHICLE_WIZPIG:
+        case VEHICLE_ROCKET:
+            return BOTTOM_BOSS_WIZPIG;
+        default:
+            return BOTTOM_BOSS_NONE;
+    }
+}
+
 const BottomSnapshot *pc_bottom_snapshot(void) {
     return &sBottom;
 }
@@ -254,6 +286,21 @@ static void bottom_portrait(s32 slot, BottomRacer *out) {
     tex_free(tex);
 }
 
+/** The number of the added character called Taj, or 0 when the roster has none. */
+static s32 bottom_added_taj(void) {
+    s32 number;
+
+    for (number = 1; number <= modchar_count(); number++) {
+        const ModCharacter *added = modchar_get(number);
+
+        if (added != NULL && (added->name[0] | 0x20) == 't' && (added->name[1] | 0x20) == 'a' &&
+            (added->name[2] | 0x20) == 'j' && added->name[3] == '\0') {
+            return number;
+        }
+    }
+    return 0;
+}
+
 /** The Adventure's collectables from the save being played. */
 static void bottom_collectables(void) {
     Settings *settings = get_settings();
@@ -322,7 +369,11 @@ static void bottom_update(void) {
     }
     sBottom.twoPlayer = netplay_players() == 0 && gNumActivePlayers >= 2;
     sBottom.mapMirrored = (get_filtered_cheats() & CHEAT_MIRRORED_TRACKS) != 0;
-    sBottom.laps = header->race_type == RACETYPE_DEFAULT ? header->laps : 0;
+    // Some bosses are raced over laps (Bubbler, Smokey, Wizpig), others over
+    // one run up or down a mountain, which has no lap to count.
+    sBottom.laps = header->race_type == RACETYPE_DEFAULT || (header->race_type == RACETYPE_BOSS && header->laps > 1)
+                       ? header->laps
+                       : 0;
     sBottom.silverCoins = -1;
     for (i = 0; i < count && i < BOTTOM_MAX_RACERS; i++) {
         Object *obj = racers[i];
@@ -347,7 +398,29 @@ static void bottom_update(void) {
         out->colour[1] = gHudMinimapColours[racer->characterId].green;
         out->colour[2] = gHudMinimapColours[racer->characterId].blue;
         bottom_map_point(model, obj->trans.x_position, obj->trans.z_position, &out->mapX, &out->mapY);
-        bottom_portrait(sBottom.racerCount, out);
+        out->boss = bottom_boss(racer);
+        if (out->boss != BOTTOM_BOSS_NONE) {
+            // Its own name and colour (the one the game's map gives Taj in
+            // his challenge); its picture is the touch screen's own.
+            out->character = -1;
+            out->modCharacter = 0;
+            out->name = sBottomBossNames[out->boss];
+            out->colour[0] = 255;
+            out->colour[1] = 0;
+            out->colour[2] = 255;
+            if (out->boss == BOTTOM_BOSS_TAJ && bottom_added_taj() != 0) {
+                // The added character's portrait, for Taj himself.
+                out->modCharacter = bottom_added_taj();
+                bottom_portrait(sBottom.racerCount, out);
+                out->modCharacter = 0;
+            } else {
+                out->portrait = NULL;
+                out->portraitWidth = out->portraitHeight = 0;
+                sBottomPortraitKey[sBottom.racerCount] = 0;
+            }
+        } else {
+            bottom_portrait(sBottom.racerCount, out);
+        }
         if (racer->playerIndex == mine) {
             // The game's own dial (hud_speedometre): its needle is at the
             // end of the scale, marked 150, at a speed of 25.

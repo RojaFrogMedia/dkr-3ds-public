@@ -410,6 +410,10 @@ static unsigned sPolls;                     // controller polls, for what is not
 static Image sPortraits[BOTTOM_MAX_RACERS];
 static unsigned sPortraitSerial[BOTTOM_MAX_RACERS];
 static const unsigned *sPortraitSource[BOTTOM_MAX_RACERS];
+// The bosses' faces (bottom/boss-<name>.bin): the game has no portraits of
+// them. Without the file a boss has its colour and initial, as any racer
+// without a picture.
+static Image sBossFaces[BOTTOM_BOSS_COUNT];
 
 // The background of the map box with the map on it, made once per track.
 // Laid out like the frame buffer (columns first, bottom row first), so that
@@ -581,6 +585,9 @@ static void draw_row(const BottomSnapshot *snap, int index, int rank, int y) {
     }
     if (racer->portrait != NULL && racer->portraitWidth > 0 && sPortraits[index].pixels != NULL) {
         image_draw(&sPortraits[index], LIST_X + PORTRAIT_X, y + (ROW_H - PORTRAIT_SIZE) / 2);
+    } else if (racer->boss > BOTTOM_BOSS_NONE && racer->boss < BOTTOM_BOSS_COUNT &&
+               sBossFaces[racer->boss].pixels != NULL) {
+        image_draw(&sBossFaces[racer->boss], LIST_X + PORTRAIT_X, y + (ROW_H - PORTRAIT_SIZE) / 2);
     } else {
         // No portrait: the racer's colour and initial.
         number[0] = racer->name[0];
@@ -873,4 +880,22 @@ void bottomscreen_init(const char *dir) {
     }
     printf("BOTTOM: logo %s, banana %s\n", sLogo.pixels != NULL ? "loaded" : "not found (text instead)",
            sBanana.pixels != NULL ? "loaded" : "not found (text instead)");
+    {
+        static const char *const names[BOTTOM_BOSS_COUNT] = { NULL,     "tricky", "bluey", "bubbler",
+                                                              "smokey", "wizpig", "taj" };
+        int found = 0;
+
+        for (x = BOTTOM_BOSS_NONE + 1; x < BOTTOM_BOSS_COUNT; x++) {
+            Image face;
+
+            snprintf(path, sizeof(path), "%s/bottom/boss-%s.bin", dir, names[x]);
+            image_load(path, &face);
+            if (face.pixels != NULL) {
+                image_scale(face.pixels, face.w, face.h, &sBossFaces[x], PORTRAIT_SIZE, PORTRAIT_SIZE);
+                free(face.pixels);
+                found++;
+            }
+        }
+        printf("BOTTOM: %d of %d boss faces loaded\n", found, BOTTOM_BOSS_COUNT - 1);
+    }
 }

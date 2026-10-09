@@ -17,10 +17,25 @@ enum {
     BOTTOM_SCENE_HUB,       // driving around the Adventure's island or a world's lobby
 };
 
+// The bosses, in the order of their pictures (bottom/boss-<name>.bin). Taj
+// on his carpet, in his races around the island, is one of them here; his
+// picture is the portrait of the added character Taj when the roster has him.
+enum {
+    BOTTOM_BOSS_NONE,
+    BOTTOM_BOSS_TRICKY,
+    BOTTOM_BOSS_BLUEY,
+    BOTTOM_BOSS_BUBBLER,
+    BOTTOM_BOSS_SMOKEY,
+    BOTTOM_BOSS_WIZPIG,
+    BOTTOM_BOSS_TAJ,
+    BOTTOM_BOSS_COUNT
+};
+
 typedef struct {
     int place;              // 1 = leading
     int character;          // the game's ten, 0-9 (an added character's donor)
     int modCharacter;       // 3ds/characters.c: 0 for one of the game's own
+    int boss;               // BOTTOM_BOSS_*: not a character at all, and `character` means nothing
     int player;             // -1: a computer racer; else the controller, which in a session is the player
     int finished;
     int mapX, mapY;         // on the map, in sixteenths of a map pixel
@@ -41,7 +56,7 @@ typedef struct {
     int me;                 // this console's racer in `racers`, or -1
     int speed;              // what the game's own dial shows, 0 to 150
     int bananas;
-    int lap, laps;          // laps 0: a race without laps (boss, challenge)
+    int lap, laps;          // laps 0: a race without laps (a challenge, a boss raced over one run)
     int silverCoins;        // -1 unless this is a silver coin race; else 0 to 8
     int adventure;          // 1: an Adventure save is being played, `collect` counts
     int twoPlayer;          // two players on this console (no single racer is "me")

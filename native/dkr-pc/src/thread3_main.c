@@ -1603,6 +1603,45 @@ void begin_level_teleport(s32 levelID) {
     }
 }
 
+#ifdef TARGET_3DS
+/**
+ * A test script's BOSS command (3ds/autotest.c): from anywhere in the
+ * Adventure, straight to a boss's race. The names with a 2 are the rematches;
+ * "taj" starts his race around the island, from the island.
+ * FALSE when there is no boss of that name.
+ */
+s32 pc_debug_boss(const char *name) {
+    static const struct {
+        const char *name;
+        s32 level;
+    } bosses[] = {
+        { "tricky", ASSET_LEVEL_TRICKYTOPS1 }, { "tricky2", ASSET_LEVEL_TRICKYTOPS2 },
+        { "bluey", ASSET_LEVEL_BLUEY1 },       { "bluey2", ASSET_LEVEL_BLUEY2 },
+        { "bubbler", ASSET_LEVEL_BUBBLER1 },   { "bubbler2", ASSET_LEVEL_BUBBLER2 },
+        { "smokey", ASSET_LEVEL_SMOKEY1 },     { "smokey2", ASSET_LEVEL_SMOKEY2 },
+        { "wizpig", ASSET_LEVEL_WIZPIG1 },     { "wizpig2", ASSET_LEVEL_WIZPIG2 },
+    };
+    s32 i, j;
+
+    // Taj's race is run on the island itself (his car challenge).
+    if ((name[0] | 0x20) == 't' && (name[1] | 0x20) == 'a' && (name[2] | 0x20) == 'j' && name[3] == '\0') {
+        if (level_type() != RACETYPE_HUBWORLD || is_taj_challenge()) {
+            return FALSE;
+        }
+        init_racer_for_challenge(VEHICLE_CAR);
+        return TRUE;
+    }
+    for (i = 0; i < ARRAY_COUNT(bosses); i++) {
+        for (j = 0; bosses[i].name[j] != '\0' && bosses[i].name[j] == (name[j] | 0x20); j++) {}
+        if (bosses[i].name[j] == '\0' && name[j] == '\0') {
+            begin_level_teleport(bosses[i].level);
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+#endif
+
 /**
  * Set the number of frames to disallow pausing for.
  */

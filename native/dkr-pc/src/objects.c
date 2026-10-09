@@ -1632,10 +1632,12 @@ void track_setup_racers(Vehicle vehicle, u32 entranceID, s32 playerCount) {
 #ifdef TARGET_3DS
             {
                 // Its added character, whose voice is read in now, not at
-                // its first shout in the race.
+                // its first shout in the race. Also against a boss, where
+                // the player is the first racer; the boss, and the racers of
+                // the title screen's demos, are nobody's added character.
                 extern void modchar_voices_preload(int number);
 
-                curRacer->modCharacter = (D_8011AD3C == 0 && vehicle < 3) ? settings->racers[var_s4].unk7 : 0;
+                curRacer->modCharacter = (D_8011AD3C != 2 && vehicle < 3) ? settings->racers[var_s4].unk7 : 0;
                 modchar_voices_preload(curRacer->modCharacter);
             }
 #endif

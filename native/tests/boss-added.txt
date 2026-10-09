@@ -1,0 +1,38 @@
+# As boss.txt with an added character picked first (four to the right on the
+# character select): the boss races with a character that is not the game's
+# own. Run with
+#   BOSS_TEST=native/tests/boss-added.txt DKR_CHARACTERS=output/sdcard/3ds/DKR \
+#       DKR_BANANAS=20000 DKR_PURCHASED=ffffffff tools/run-bosses.sh
+1000 8 START
+1100 8 START
+1250 8 A
+1400 8 A
+1440 5 STICK_RIGHT
+1465 5 STICK_RIGHT
+1490 5 STICK_RIGHT
+1515 5 STICK_RIGHT
+1540 SHOT
+1550 8 A
+1800 8 A
+2000 8 A
+2250 8 A
+2500 8 A
+2650 8 A
+2800 8 A
+3100 BOSS BOSSNAME
+3300 SHOT
+3380 SHOT
+3450 SHOT
+3460 BSHOT
+3700 8 A
+3800 8 A
+3900 1500 A
+4000 SHOT
+4010 BSHOT
+4500 SHOT
+4510 BSHOT
+5000 SHOT
+5010 BSHOT
+5400 SHOT
+5410 BSHOT
+5450 EXIT
