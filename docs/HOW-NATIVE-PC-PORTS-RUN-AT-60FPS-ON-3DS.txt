@@ -1,0 +1,193 @@
+HOW A NATIVE PC PORT OF AN N64 GAME RUNS AT 60 FPS ON A 3DS
+===========================================================
+
+Worked out on Diddy Kong Racing, October 2026. Every number below was
+measured in the Azahar emulator, which runs the program at the Old 3DS clock
+(268 MHz); none has been measured on a console yet. Treat them as the shape
+of the result, not the result.
+
+(Later note: this was written before the game first ran on a console. It
+has since been played on a New 3DS at about 60 frames a second in most
+scenes; what changed to get there is in native/dkr-pc/3ds/README.md, "How a
+frame happens" and "Reading the log". The numbers below are still the
+emulator's.)
+
+
+1. START FROM THE RIGHT KIND OF PORT
+------------------------------------
+There are two ways an N64 game reaches a PC, and only one of them is fast
+enough for a 3DS.
+
+  Static recompilation (N64Recomp: DKR-R, DK64 ReKongpiled). The original
+  MIPS machine code is translated instruction by instruction into C. Every
+  MIPS register becomes a 64-bit variable in memory and every memory access a
+  byte-swapped lookup into an emulated RAM. On a 64-bit PC that is free. On a
+  32-bit ARM11 it is several ARM instructions per MIPS instruction, so the
+  game runs at about the speed of the N64 it came from.
+      Measured: recompiled DKR, 15-30 fps with audio off, one core saturated
+      by the game code alone; 4.1 MB of code.
+
+  Native port of a decompilation. The game's C source is compiled for the
+  target like any other program. The compiler keeps values in registers,
+  structures are read directly, and the game's own logic takes a small part
+  of a frame.
+      Measured: native DKR, game logic about 1.5-9 ms a frame; 0.86 MB of
+      code.
+
+So: find (or make) the native port. For DKR it is dfchil/Diddy-Kong-Racing,
+which builds for Linux and for the Dreamcast.
+
+
+2. PREFER A PORT THAT ALREADY RUNS ON A SMALL 32-BIT MACHINE
+------------------------------------------------------------
+A port written for a 64-bit desktop carries three costs to a 3DS: pointers
+that no longer fit the game's 32-bit structures, a renderer that expects
+programmable shaders, and a memory budget in the hundreds of megabytes. A
+port that also targets the Dreamcast has paid all three already, because the
+Dreamcast (200 MHz, 16 MB, 32-bit, little-endian, fixed-function GPU) is the
+closest machine there is to an Old 3DS (268 MHz, 64 MB for the program,
+32-bit, little-endian, fixed-function GPU):
+
+  - 32-bit pointers: the game's structures keep their N64 layout.
+  - Little-endian: the big-endian ROM data is already byte-swapped where it
+    is read.
+  - A 3 MB game heap, and the ROM's assets used from one 10 MB file.
+  - A graphics interface small enough to list on one page: make a texture,
+    bind it, choose "texel times colour" or "blend towards a colour", fog,
+    depth test and write, alpha test, scissor, draw triangles.
+
+That last point is the whole port. The PICA200 has no fragment shaders, but
+it has texture-environment stages, and each of those calls is one stage
+setting. The 3DS layer for DKR is about 1,700 lines: a citro3d backend, NDSP
+audio output, HID input, a makefile. The game's 200 source files compile
+unchanged.
+
+When no such port exists, the measurements that say whether one can be made:
+compile every source file of the decompilation with the 3DS compiler's front
+end (tools/native_census.sh does this). For DKR's original decompilation,
+197 of 199 files compiled as they were. GCC's -fsso-struct=big-endian, which
+stores every structure big-endian so ROM data needs no conversion, left 115
+places to fix by hand. That is the fallback route.
+
+
+3. WHERE THE TIME GOES, AND WHAT MOVES IT
+-----------------------------------------
+First run of the native port on the 3DS layer: 20 fps. The game was not the
+problem. A frame's time, in a busy scene of about 5,300 vertices:
+
+    game logic            ~2 ms
+    display list         52 ms      <- the port's interpreter
+    audio             3-20 ms
+
+The N64 game hands a display list to its graphics chip; the port interprets
+that list on the CPU. Five changes, in the order they were made:
+
+  a) Evaluate the colour combiner once per material, not per vertex.
+     The interpreter ran the N64's colour-combiner formula twice for every
+     corner of every triangle, in floating point. For a given material the
+     result is a simple function of the vertex colour (bilinear in colour and
+     alpha), so five evaluations fix it for the whole batch and each vertex
+     costs a few integer operations. A sixth sample checks the assumption and
+     falls back when a material does not fit.
+
+  b) One draw call per run of triangles with the same state.
+     Each of the game's polygon commands (at most 16 triangles) was its own
+     draw call with its own cache flush, a system call each. Now triangles
+     accumulate in the vertex buffer and are drawn when the state actually
+     changes; the buffer is flushed once a frame.
+
+  c) Find textures by hash, not by scanning a thousand cache entries.
+
+  d) Project each vertex once per batch, not once per triangle corner.
+
+     After a-d: 14 ms for the same scene (52 -> 14).
+
+  e) Do what the N64 did: draw on another processor.
+     On the N64 the graphics chip draws frame N while the CPU computes frame
+     N+1, and the game is written for that: it alternates between two sets of
+     display-list buffers. So the interpreter can run on a second thread with
+     no change to the game. The same goes for audio: the synthesizer writes a
+     command list (cheap, tied to game state) and a mixer turns it into
+     samples (expensive, private), which on the N64 was also the graphics
+     chip's job. The mixer moves to a worker thread.
+         An Old 3DS has two cores (the second is the system's; a program may
+         take 80% of it): game on the first, drawing and mixing on the
+         second. A New 3DS has more, and the render thread gets its own.
+
+After e), the game's thread spends 1.5-9 ms a frame, and the attract sequence
+(races on four tracks) holds 60 fps for 32 of 50 seconds measured, 53-59 for
+the rest, with one dip while a level loads.
+
+
+4. PACE BY COST, NOT BY THE CLOCK
+---------------------------------
+The N64 game takes the number of 60 Hz periods a frame covered as its
+physics timestep, and commits to it: a timestep that flickers between one and
+two makes everything shake. The port must commit the same way, and must
+decide by what a frame costs (the larger of the game's own time and the
+render thread's time), never by how long it waited. The first version counted
+time spent waiting for the render thread as work, decided frames were too
+slow, and sat at 30 fps in scenes that needed 6 ms.
+
+
+5. USE THE WHOLE SCREEN
+-----------------------
+The top screen is 400x240 against the game's 320x240. The game builds its
+projection for 5:3 instead of 4:3, and the interpreter spreads anything
+drawn through a perspective matrix 1.25x about the centre: a wider view, not
+a stretched one. The 2D layer (HUD, text, menus) keeps its size in the
+middle; rectangles that span the full 320 are backgrounds and fades and are
+widened; flat geometry that touches the old screen edge (screen wipes) is
+carried to the new edge.
+
+
+6. MULTIPLAYER BETWEEN CONSOLES
+-------------------------------
+Split screen does not fit a 3DS, and it does not need to: every console can
+run the whole game and exchange only the controllers. The game is
+deterministic given the same build, save data, timestep and controller
+samples, so a controller poll simply does not return until it has every
+player's sample for that poll number, and a local sample is used a few polls
+after it was read to give the others time to arrive (3ds/netplay.c).
+    Measured: two emulated consoles through the menus and into the Adventure
+    hub in step, then out of step after about 4,000 polls.
+Staying in step is the work. Anything the game decides from something that
+differs between consoles breaks it, and the first such thing found was
+random numbers drawn while drawing or making sound (which voice clip, which
+texture frame), which depend on what the sound hardware has finished
+playing. Those now come from a generator of their own. At least one more
+cause remains.
+Each console shows its own player: the game still lays the frame out as a
+split screen, marks in the display list whose part is whose, and the
+renderer draws only the local player's part, over the whole screen. Written,
+not yet tested in a race.
+Still to build: local wireless as the transport (it runs over UDP today) and
+an in-game Local Play menu (host, join, player list) in the game's own font.
+
+
+7. WHAT IS NOT PROVEN
+---------------------
+  - Nothing here has run on a console. Azahar counts instructions; it does
+    not model the Old 3DS's small caches, so real numbers will be lower.
+    The first thing to do with a console is read log.txt after a race.
+  - The PICA200 drops triangles with a corner far off screen where the
+    emulator draws them. The interpreter clips against the near plane only
+    and will need a guard-band clip.
+  - The Circle Pad Pro code follows the documented protocol and has not met
+    the accessory.
+  - 60 fps was measured in the attract sequence, not in a full eight-racer
+    race with weapons on screen.
+
+
+THE SHORT VERSION
+-----------------
+1. Use a native port of the decompilation, not a recompilation.
+2. Use one that already runs on a 32-bit little-endian machine with a
+   fixed-function GPU (a Dreamcast port); the 3DS layer is then small.
+3. Profile before optimising: the game logic is cheap, the display-list
+   interpreter is not.
+4. Per material, not per vertex; per batch, not per triangle; per frame, not
+   per draw.
+5. Put drawing and audio mixing on the second core, as the N64 put them on
+   its graphics chip.
+6. Commit the timestep by measured cost.

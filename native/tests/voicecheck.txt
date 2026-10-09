@@ -1,0 +1,12 @@
+# Every added character's voice, checked by the game itself (run with
+# DKR_CHARACTERS=out/characters): on the Game Select screen, where the sound
+# bank is loaded, VOICECHECK fetches each recording of each character from
+# that character's own voice file and writes a check sum per character to the
+# log; python tools/check-voices.py --log out/native-run/log.txt compares
+# them with the pack and the patches.
+1000 8 START
+1100 8 START
+1250 8 A
+1400 VOICECHECK
+1600 SHOT
+1650 EXIT

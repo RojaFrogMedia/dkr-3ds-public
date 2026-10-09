@@ -1,0 +1,10 @@
+# Attract mode, a screenshot now and then.
+120 SHOT
+400 SHOT
+800 SHOT
+1200 SHOT
+1600 SHOT
+2000 SHOT
+2400 SHOT
+2800 SHOT
+3000 EXIT

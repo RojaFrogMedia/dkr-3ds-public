@@ -1,0 +1,19 @@
+# An added character's voice on the character select, recorded without the
+# music (DKR_CHARACTERS, DKR_BANANAS, DKR_PURCHASED=1, DKR_AUDIODUMP=1):
+# walk to the first added figure, choose it, un-choose it, choose it again.
+1000 8 START
+1100 8 START
+1250 8 A
+1400 8 A
+1500 NOMUSIC
+1560 5 STICK_RIGHT
+1600 5 STICK_RIGHT
+1640 5 STICK_RIGHT
+1680 5 STICK_RIGHT
+1760 SHOT
+1800 8 A
+1900 SHOT
+2000 8 B
+2150 8 A
+2300 SHOT
+2400 EXIT

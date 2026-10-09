@@ -1,0 +1,46 @@
+# The title screen as it first comes up, then a Tracks mode race left for the
+# character select, and from there back to the title screen: both times the
+# title screen must show the same scene from its beginning (Diddy and his
+# friends coming out of the bushes).
+1000 8 START
+1100 8 START
+1130 SHOT
+1250 SHOT
+1400 SHOT
+1550 SHOT
+1700 SHOT
+1850 SHOT
+2000 SHOT
+2150 SHOT
+2300 8 A
+2450 8 A
+2600 8 A
+2850 8 A
+3050 8 A
+3180 8 STICK_DOWN
+3250 8 A
+3450 8 A
+3650 8 A
+3850 8 A
+4050 8 A
+4250 8 A
+4350 900 A
+5050 SHOT
+5350 8 START
+5500 8 STICK_DOWN
+5600 8 STICK_DOWN
+5700 8 STICK_DOWN
+5800 8 A
+6000 SHOT
+6050 8 B
+6200 8 B
+6350 8 B
+6400 SHOT
+6520 SHOT
+6670 SHOT
+6820 SHOT
+6970 SHOT
+7120 SHOT
+7270 SHOT
+7420 SHOT
+7500 EXIT

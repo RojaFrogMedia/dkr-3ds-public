@@ -1,0 +1,10 @@
+# A picture of the sky behind the multiplayer menus, without their words.
+1000 8 START
+1100 8 START
+1250 8 A
+1330 6 STICK_DOWN
+1370 6 STICK_DOWN
+1420 8 A
+1500 HIDETEXT
+1700 SHOT
+1750 EXIT

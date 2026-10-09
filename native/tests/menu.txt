@@ -1,0 +1,23 @@
+# The touch screen menu: open it, change values by D-pad and by touch,
+# visit every page, close it. BSHOT saves the bottom screen.
+200 BSHOT
+300 5 SELECT
+320 BSHOT
+330 5 DOWN
+350 5 RIGHT
+370 BSHOT
+380 5 DOWN
+400 5 LEFT
+420 BSHOT
+440 TOUCH 120,30
+460 BSHOT
+470 TOUCH 300,60
+490 BSHOT
+500 TOUCH 200,30
+580 BSHOT
+590 TOUCH 300,30
+610 BSHOT
+620 5 SELECT
+700 BSHOT
+720 SHOT
+800 EXIT

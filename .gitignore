@@ -1,0 +1,35 @@
+# What the builder makes from your ROM. It holds the game's data:
+# it must never be committed or shared.
+/output/
+/out/
+
+# ROMs, wherever they are put. rom/ keeps only its note.
+/rom/*
+!/rom/PUT YOUR ROM HERE.txt
+*.z64
+*.n64
+*.v64
+*.rom
+/*.zip
+
+# A folder of added characters made by tools/import-characters.py (it is
+# mostly the ROM's data; only characters/added-characters.pack is shared).
+/characters/*
+!/characters/added-characters.pack
+!/characters/README.md
+
+# The private Python that BUILD.cmd can download, and Python's leftovers.
+/builder/python/
+/builder/python.zip
+__pycache__/
+*.pyc
+
+# An emulator unpacked for the tests (docs/BUILDING.md).
+/tools/azahar*/
+
+# Editors and systems.
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

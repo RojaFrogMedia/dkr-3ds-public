@@ -1,0 +1,56 @@
+# A battle (Darkwater Beach) in Tracks mode against three computer racers, to
+# see the portraits over the banana counts. Run with DKR_SETTINGS="save_file=1"
+# (the save that has the keys) and, to play an added character against added
+# characters, DKR_CHARACTERS=out/characters DKR_BANANAS=20000 DKR_PURCHASED=ffffffff.
+# The track select's sixth column is each world's challenge; the STICK_DOWN at
+# 2600 picks the world (none: Fire Mountain, one: Darkwater Beach, two at 2600
+# and 2640: Icicle Pyramid, three: Smokey Castle). FINISH knocks the player
+# out, which ends a one-player battle.
+1000 8 START
+1100 8 START
+1250 8 A
+1400 8 A
+1440 5 STICK_RIGHT
+1465 5 STICK_RIGHT
+1490 5 STICK_RIGHT
+1515 5 STICK_RIGHT
+1540 SHOT
+1550 8 A
+1800 8 A
+2000 8 A
+2130 8 STICK_DOWN
+2200 8 A
+2300 SHOT
+2340 6 STICK_RIGHT
+2380 6 STICK_RIGHT
+2420 6 STICK_RIGHT
+2460 6 STICK_RIGHT
+2500 6 STICK_RIGHT
+2560 SHOT
+2600 6 STICK_DOWN
+2700 SHOT
+2900 SHOT
+3000 8 A
+3100 SHOT
+3200 8 A
+3300 SHOT
+3400 8 A
+3500 SHOT
+3600 8 A
+3700 SHOT
+3800 8 A
+3900 SHOT
+4000 8 A
+4100 SHOT
+4100 850 A
+4400 SHOT
+4700 SHOT
+4700 BSHOT
+4760 4 FINISH
+4850 SHOT
+5250 SHOT
+5450 BSHOT
+5950 SHOT
+6000 8 A
+6200 SHOT
+6300 EXIT

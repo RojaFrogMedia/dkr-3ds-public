@@ -1,0 +1,35 @@
+; One program for everything the interpreter draws: the position arrives
+; already multiplied by w, the colour as bytes, the fog factor beside the
+; texture coordinates.
+
+.fvec projection[4]
+
+.constf consts(1.0, 0.0039215686, 0.0, 0.5)
+.alias one consts.xxxx
+.alias byte_scale consts.yyyy
+
+.out outpos position
+.out outclr color
+.out outtc0 texcoord0
+.out outtc1 texcoord1
+
+.alias inpos v0
+.alias intex v1
+.alias inclr v2
+
+.proc main
+    dp4 outpos.x, projection[0], inpos
+    dp4 outpos.y, projection[1], inpos
+    dp4 outpos.z, projection[2], inpos
+    dp4 outpos.w, projection[3], inpos
+
+    mov outtc0, intex
+
+    ; The fog factor indexes the alpha ramp.
+    mov r1, consts.wwww
+    mov r1.x, intex.z
+    mov outtc1, r1
+
+    mul outclr, byte_scale, inclr
+    end
+.end

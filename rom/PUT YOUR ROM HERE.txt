@@ -1,0 +1,14 @@
+Put your Diddy Kong Racing ROM in this folder, then run BUILD.cmd
+(Windows) or build.sh (Linux, macOS) in the folder above.
+
+The ROM must be the first US release:
+
+    Diddy Kong Racing (USA) (En,Fr), version 1.0
+    SHA-1  0cb115d8716dbbc2922fda38e533b9fe63bb9670  (as a .z64 file)
+
+Any of the usual file types works: .z64, .n64, .v64, or a .zip with the
+ROM inside. Its name does not matter. The builder checks the file and
+says so if it is another release (Europe, Japan, US 1.1) or a modified
+copy.
+
+No ROM comes with this project. Make yours from a cartridge you own.

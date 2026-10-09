@@ -1,0 +1,35 @@
+# Player 1: hosts two players, sends everyone back to the lobby from the track screen,
+# starts again when a third has joined, and races.
+1000 8 START
+1100 8 START
+1250 8 A
+1330 6 STICK_DOWN
+1370 6 STICK_DOWN
+1420 8 A
+1620 8 A
+1760 8 A
+2000 SHOT
+2020 BSHOT
+2200 SHOT
+2300 8 A
+2600 8 A
+2750 8 A
+2890 SHOT
+2910 6 STICK_UP
+2960 SHOT
+2990 8 A
+3150 SHOT
+4200 SHOT
+4220 BSHOT
+4300 8 A
+4600 8 A
+4750 8 A
+4900 SHOT
+4950 8 A
+5060 8 A
+5400 1000 A
+5600 SHOT
+6000 SHOT
+6450 8 FINISH
+6700 SHOT
+6900 EXIT

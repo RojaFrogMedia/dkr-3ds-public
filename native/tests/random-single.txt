@@ -1,0 +1,16 @@
+# Single player, Tracks mode: L on the track select picks a random track.
+1000 8 START
+1100 8 START
+1250 8 A
+1400 8 A
+1550 8 A
+1800 8 A
+2000 8 A
+2130 8 STICK_DOWN
+2200 8 A
+2330 SHOT
+2360 8 L
+2460 SHOT
+2500 8 L
+2600 SHOT
+2650 EXIT

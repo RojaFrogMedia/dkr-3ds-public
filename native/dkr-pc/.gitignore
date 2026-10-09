@@ -1,0 +1,98 @@
+# ignore all rom files
+*.z64
+*.n64
+*.v64
+
+#Ignore any custom boot files if any.
+boot_custom.bin 
+
+#compiled or ripped asm
+asm/*
+asm
+build/*
+build/
+
+#permuter folder
+nonmatchings/*
+nonmatchings/
+
+#binaries ripped from the ROMs
+assets/*
+assets_*/
+assets_*/*
+bin/
+bin/*
+ucode/*
+
+# Asset enums are auto-generated, but this release includes the file
+# ready-made so that compiling needs neither the asset tool nor a ROM
+# (docs/BUILDING.md): it is not ignored here.
+
+#compiled object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Do not ignore .obj files in the mods/ directory
+!mods/**/*.obj
+
+#Precompiled Headers
+*.gch
+*.pch
+
+#compiled dynamic libraries
+*.so
+*.dylib
+*.dll
+
+#static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+#Windows stuff
+*.bat
+*.exe
+
+#misc
+__pycache__/
+*__pycache__/
+expected/
+.*/
+ver/*.ld
+*.map
+*/*.map
+*auto.txt
+*_auto.*.txt
+*.*auto.txt
+*/.splat_cache
+.splat_cache
+.splat_cache*
+ctx.c
+ctx.c.m2c
+ctx_includes.c
+tools/n64crc
+!tools/build
+m2cfiles/
+tools/ido-recomp
+*.DS_Store
+tools/binutils
+*.d
+treemap.html
+docs/
+dkracing
+log.txt
+dkracing.elf
+cd/
+testcast
+pc/
+amap
+
+# Generated Dreamcast disc staging and images
+/cdrom/
+/*.cdi
+/dkracing-*.elf
+/examples/dkr_music_player/cdrom/
+/captures/

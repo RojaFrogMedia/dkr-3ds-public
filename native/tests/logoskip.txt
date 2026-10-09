@@ -1,0 +1,14 @@
+# A button during the opening logos goes straight to the title screen with
+# its logo and options up. Shots: the logos, the fade, the title screen
+# arriving, its options, then the first option taken (character select).
+1 SKIPLOGOS
+400 SHOT
+420 8 B
+430 SHOT
+470 SHOT
+500 SHOT
+540 SHOT
+600 SHOT
+700 8 A
+900 SHOT
+960 EXIT

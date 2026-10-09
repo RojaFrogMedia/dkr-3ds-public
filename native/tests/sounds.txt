@@ -1,0 +1,16 @@
+# Single sounds on the quiet Game Select screen, to record (DKR_AUDIODUMP=1, and
+# DKR_CHARACTERS for the added one): an added character's voice, a looping
+# engine recording for three seconds, an ordinary effect.
+1000 8 START
+1100 8 START
+1250 8 A
+1400 8 A
+1550 8 A
+1800 8 A
+2000 8 A
+2200 NOMUSIC
+2400 SOUND 642
+2640 BANKSOUND 13
+3000 SOUND 10
+3200 SHOT
+3250 EXIT

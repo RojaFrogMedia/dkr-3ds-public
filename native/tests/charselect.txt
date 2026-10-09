@@ -1,0 +1,20 @@
+# The character select with the screen pretending to hold three columns:
+# the camera slides as the cursor moves right, then back.
+900 COLUMNS 3
+1000 8 START
+1100 8 START
+1250 8 A
+1400 8 A
+1620 SHOT
+1650 6 STICK_RIGHT
+1700 6 STICK_RIGHT
+1760 SHOT
+1800 6 STICK_RIGHT
+1850 6 STICK_RIGHT
+1920 SHOT
+1960 6 STICK_LEFT
+2000 6 STICK_LEFT
+2040 6 STICK_LEFT
+2080 6 STICK_LEFT
+2160 SHOT
+2200 EXIT

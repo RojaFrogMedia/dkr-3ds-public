@@ -1,0 +1,21 @@
+# The touch screen in the Adventure: into GAME A and around the island, where
+# it lists what the save has collected (out/native-run/bottom.png).
+1000 8 START
+1100 8 START
+1250 8 A
+1400 8 A
+1550 8 A
+1800 8 A
+2000 8 A
+2250 8 A
+2450 SHOT
+2460 BSHOT
+2500 8 A
+2650 8 A
+2800 8 A
+3000 SHOT
+3400 SHOT
+3410 BSHOT
+4200 SHOT
+4210 BSHOT
+4300 EXIT

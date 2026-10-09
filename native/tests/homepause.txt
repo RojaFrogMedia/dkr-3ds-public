@@ -1,0 +1,7 @@
+# The HOME button's pause: the touch screen says PAUSED, then the game goes on.
+600 SHOT
+700 HOME
+760 BSHOT
+900 SHOT
+1300 SHOT
+1320 EXIT

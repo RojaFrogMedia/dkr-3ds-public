@@ -1,0 +1,125 @@
+# Nintendo 3DS build of the native port.
+#
+#   make -f Makefile.3ds -j8          # build/3ds/dkracing.3dsx
+#
+# Needs devkitARM with libctru and citro3d (DEVKITPRO set). The game reads
+# assets.bin and assets.lut.bin (from `make build_assets`) out of
+# sdmc:/3ds/DKR/.
+
+ifeq ($(strip $(DEVKITPRO)),)
+$(error DEVKITPRO is not set)
+endif
+DEVKITARM ?= $(DEVKITPRO)/devkitARM
+PREFIX    := $(DEVKITARM)/bin/arm-none-eabi-
+CC        := $(PREFIX)gcc
+TOOLS     := $(DEVKITPRO)/tools/bin
+BUILD     ?= build/3ds
+TARGET    := $(BUILD)/dkracing
+
+include 3ds/sources.mk
+
+DEFINES := \
+	-DTARGET_PC \
+	-DTARGET_3DS \
+	-D__3DS__ \
+	-D_LANGUAGE_C \
+	-D_FINALROM \
+	-DNDEBUG \
+	-DF3DDKR_GBI \
+	-DVERSION_US_V77 \
+	-DAVOID_UB \
+	-DNON_MATCHING \
+	-DBUILD_VERSION=VERSION_G \
+	-DBUILD_VERSION_STRING=\"2.0G\" \
+	-D_MIPS_SZLONG=32 \
+	-DPC_MAIN_POOL_BYTES='(6 * 1024 * 1024)' \
+	-DGBI_FLOAT_MTX \
+	-DAUDIO_NO_REVERB
+
+INCLUDES_REIMPL := \
+	-I . -I include -I include/PR -I include/sys -I assets -I src -I src/hasm \
+	-I libultra -I libultra/src/gu -I libultra/src/libc -I libultra/src/io \
+	-I libultra/src/sc -I libultra/src/audio -I libultra/src/os
+INCLUDES := -I include/libc $(INCLUDES_REIMPL)
+
+ARCH := -march=armv6k -mtune=mpcore -mfloat-abi=hard -mfpu=vfp -mtp=soft -mword-relocations
+OPT  ?= -O2
+
+BASE_CFLAGS := $(ARCH) $(OPT) -g $(DEFINES) \
+	-std=gnu23 -fno-common -fno-strict-aliasing -funsigned-char -fwrapv \
+	-ffunction-sections -fdata-sections -ffast-math -fsingle-precision-constant \
+	-Wno-int-conversion -MMD -MP
+# libctru has an osGetTime of its own; libultra's is linked under another name.
+N64_RENAMES := -DosGetTime=n64_osGetTime
+# The game and libultra bring their own libc declarations.
+CFLAGS          := $(BASE_CFLAGS) $(N64_RENAMES) -fno-builtin $(INCLUDES)
+# The platform layer uses libctru, citro3d and newlib.
+# TRACE=1 builds the game and libultra with a call-stack tracer (3ds/diag.c),
+# so a STALL report says which function the game thread is in. Slower: use a
+# separate BUILD directory for it.
+ifeq ($(TRACE),1)
+CFLAGS += -finstrument-functions
+endif
+
+CFLAGS_PLATFORM := $(BASE_CFLAGS) -I$(DEVKITPRO)/libctru/include -I$(BUILD) -I 3ds
+# main.c, reimpl.c and audio_hle.c are the PC interpreter and OS layer, built
+# like the game but against the host's headers where they ask for them.
+CFLAGS_REIMPL   := $(BASE_CFLAGS) $(N64_RENAMES) -fno-builtin $(INCLUDES_REIMPL) -I 3ds
+# PROFILE=1 times the parts of the display-list interpreter (3ds/main.c,
+# DL_PROFILE): a "dlprof:" line in the log every 60 frames. Use a separate
+# BUILD directory for it.
+ifeq ($(PROFILE),1)
+CFLAGS_REIMPL += -DDL_PROFILE
+endif
+
+PLATFORM_FILES := 3ds/platform.c 3ds/gfx.c 3ds/audio.c 3ds/input.c 3ds/cpp.c 3ds/netplay.c 3ds/link.c 3ds/upnp.c 3ds/autotest.c 3ds/diag.c 3ds/touchmenu.c 3ds/bottomscreen.c 3ds/characters.c 3ds/hardmode.c
+REIMPL_FILES   := 3ds/main.c 3ds/reimpl.c 3ds/audio_hle.c
+
+O_FILES := $(addprefix $(BUILD)/,$(PLATFORM_FILES:.c=.o) $(REIMPL_FILES:.c=.o) $(GAME_FILES:.c=.o) $(LIBULTRA_FILES:.c=.o)) \
+	$(BUILD)/dkr_shbin.o
+D_FILES := $(O_FILES:.o=.d)
+
+LDFLAGS := -specs=3dsx.specs $(ARCH) -Wl,--gc-sections -Wl,-Map,$(TARGET).map -L$(DEVKITPRO)/libctru/lib
+LIBS    := -lcitro3d -lctru -lm
+
+.PHONY: all clean
+all: $(TARGET).3dsx
+
+$(TARGET).3dsx: $(TARGET).elf
+	$(TOOLS)/3dsxtool $< $@
+	@$(PREFIX)size $<
+
+$(TARGET).elf: $(O_FILES)
+	$(CC) $(LDFLAGS) $(O_FILES) -o $@ $(LIBS)
+
+$(BUILD)/dkr.shbin: 3ds/dkr.v.pica
+	@mkdir -p $(dir $@)
+	$(TOOLS)/picasso -o $@ $<
+
+$(BUILD)/dkr_shbin.s $(BUILD)/dkr_shbin.h &: $(BUILD)/dkr.shbin
+	$(TOOLS)/bin2s -a 4 -H $(BUILD)/dkr_shbin.h $< > $(BUILD)/dkr_shbin.s
+
+$(BUILD)/dkr_shbin.o: $(BUILD)/dkr_shbin.s
+	$(CC) $(ARCH) -c -o $@ $<
+
+$(BUILD)/3ds/gfx.o: $(BUILD)/dkr_shbin.h
+
+$(addprefix $(BUILD)/,$(PLATFORM_FILES:.c=.o)): $(BUILD)/%.o: %.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS_PLATFORM) -c -o $@ $<
+
+# The mixer is called through 3ds/audio.c, which runs it on a worker thread.
+$(BUILD)/3ds/audio_hle.o: CFLAGS_REIMPL += -Dpc_audio_hle_run=pc_audio_hle_run_sync
+
+$(addprefix $(BUILD)/,$(REIMPL_FILES:.c=.o)): $(BUILD)/%.o: %.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS_REIMPL) -c -o $@ $<
+
+$(BUILD)/%.o: %.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+clean:
+	rm -rf $(BUILD)
+
+-include $(D_FILES)

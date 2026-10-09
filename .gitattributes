@@ -1,0 +1,10 @@
+# Every file is kept exactly as it is: no line-ending conversion. BUILD.cmd
+# needs Windows line endings, the .sh scripts and the game's source need
+# Unix ones, and the compiled program and the character pack are binary.
+* -text
+
+*.3dsx binary
+*.cia binary
+*.pack binary
+*.bin binary
+*.png binary
