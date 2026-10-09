@@ -28,34 +28,58 @@ Nintendo or Rare.
 - A PC to run the builder once: Windows, Linux or macOS.
 
 - Custom Character credits:
-#   Character       Credit   Source patch
----  --------------  -------  ------------------------------------------------------------
  1   Bomberman       syeo     bomberman - syeo (recomp).xdelta
+  
  2   Bottles         syeo     bottles - syeo.xdelta
+ 
  3   Bowser          syeo     bowser - syeo.xdelta
+ 
  4   Dixie Kong      syeo         dixie kong.xdelta
+ 
  5   Link            syeo         DKR-OOT-64-1.1.xdelta ("DKR OOT 64")
+ 
  6   Yoshi           ThatGuyMcd         DKR-Yoshi-Racing-Story64v04.xdelta ("Yoshi Racing Story 64")
+ 
  7   Red Yoshi       ThatGuyMcd         DKR-Yoshi-Racing-Story64v04.xdelta ("Yoshi Racing Story 64")
+ 
  8   Donkey Kong     syeo     donkey kong - syeo.xdelta
+ 
  9   Grunty          syeo     grunty - syeo (recomp).xdelta
+ 
 10   Jinjo           syeo     jinjo (blue) - syeo.xdelta
+
 11   Kazooie         syeo     kazooie - syeo.xdelta
+
 12   K. Rool         syeo         kkrool.xdelta
+
 13   Laylee          syeo     laylee - syeo.xdelta
+
 14   Luigi           syeo     luigi - syeo.xdelta
+
 15   Mario           syeo         mario.xdelta
+
 16   Sabreman        syeo     sabreman - syeo.xdelta
+
 17   Shovel Knight   syeo         shovelknight.xdelta
+
 18   Taj             syeo         taj.xdelta
+
 19   Tiny Kong       syeo     tiny kong - syeo.xdelta
+
 20   Waluigi         syeo     waluigi - syeo.xdelta
+
 21   Wario           syeo     wario - syeo (recomp).xdelta
+
 22   Wizpig          ThatGuyMcd         wizpig.xdelta
+
 23   Yooka           syeo         yooka.xdelta
-24   Bubsy           That Smol Bobcat         (no patch file on this PC)
-25   Moggy           syeo         (no patch file on this PC)
-26   Mumbo Jumbo     syeo         (no patch file on this PC)
+
+24   Bubsy           That Smol Bobcat       
+
+25   Moggy           syeo 
+
+26   Mumbo Jumbo     syeo    
+
 
   
 
