@@ -28,6 +28,7 @@ Nintendo or Rare.
 - A PC to run the builder once: Windows, Linux or macOS.
 
 - Custom Character credits:
+- 
  1   Bomberman       syeo     bomberman - syeo (recomp).xdelta
   
  2   Bottles         syeo     bottles - syeo.xdelta
