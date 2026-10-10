@@ -8,6 +8,7 @@
 #include "macros.h"
 #include "math_util.h"
 #include "objects.h"
+#include "pc_swap.h"
 #include "PR/libaudio.h"
 #include "printf.h"
 #include "racer.h"
@@ -39,14 +40,6 @@ Object_Racer *gSoundRacerObj;
  * Sets the initial pitch and volume values for the engine sound.
  */
 VehicleSoundData *racer_sound_init(s32 characterId, s32 vehicleId) {
-#ifdef TARGET_PC
-    // Audio is deferred on PC (see audio_init in audio.c). This function reads
-    // ASSET_AUDIO_TABLE, whose u32 offsets are big-endian and unswapped, so the
-    // asset_load below would fetch from a garbage ROM offset. Every consumer
-    // NULL-checks racer->vehicleSound, so returning NULL just leaves racers
-    // silent. Unstub when the audio milestone byteswaps the audio tables.
-    return NULL;
-#else
     s32 unused[2];
     s32 i;
     u8 *ptr;
@@ -79,9 +72,24 @@ VehicleSoundData *racer_sound_init(s32 characterId, s32 vehicleId) {
     // There is no type check for vehicleId, so passing an unsupported type (e.g. VEHICLE_LOOPDELOOP)
     // will cause out-of-bounds access and undefined behavior.
     table = (s32 *) asset_table_load(ASSET_AUDIO_TABLE);
+#ifdef TARGET_PC
+    // A fresh copy of the audio table: big-endian u32s, swapped by whoever
+    // loads it (as in audio_init and audioMgr's reverb setup).
+    pc_swap32_buf(table, asset_table_size(ASSET_AUDIO_TABLE));
+#endif
     assetOffset = table[ASSET_AUDIO_7] + (vehicleId * 10 + characterId) * sizeof(VehicleSoundAsset);
     asset = (VehicleSoundAsset *) mempool_alloc_safe(sizeof(VehicleSoundAsset), COLOUR_TAG_CYAN);
     asset_load(ASSET_AUDIO, (u32) asset, assetOffset, sizeof(VehicleSoundAsset));
+#ifdef TARGET_PC
+    // The entries are packed 0x4C bytes apart in the ROM, and the u16/s16
+    // fields are big-endian; the u8 fields between them need nothing.
+    _Static_assert(sizeof(VehicleSoundAsset) == 0x4C, "VehicleSoundAsset must match the ROM's layout");
+    PC_SWAP16_AT(asset, soundId, sizeof(asset->soundId));
+    PC_SWAP16_AT(asset, pitchLevels, sizeof(asset->pitchLevels));
+    PC_SWAP16_AT(asset, pitchLateralSpeedScale,
+                 offsetof(VehicleSoundAsset, planeHovercraftBasePitch) -
+                     offsetof(VehicleSoundAsset, pitchLateralSpeedScale));
+#endif
 
     soundData = (VehicleSoundData *) mempool_alloc_safe(sizeof(VehicleSoundData), COLOUR_TAG_CYAN);
 
@@ -148,7 +156,6 @@ VehicleSoundData *racer_sound_init(s32 characterId, s32 vehicleId) {
     mempool_free(asset);
 
     return soundData;
-#endif
 }
 
 /**
